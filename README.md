@@ -14,4 +14,4 @@ This application is designed to track the coding learning process
 **Server:** ASP.NET Core
 
 
-[![Build](https://github.com/y4ile/lab2/actions/workflows/main.yml/badge.svg)](https://github.com/y4ile/lab2/actions/workflows/main.yml)
+[![Build](https://github.com/y4ile/ITrack/actions/workflows/main.yml/badge.svg)](https://github.com/y4ile/ITrack/actions/workflows/main.yml)
