@@ -1,0 +1,51 @@
+﻿<!-- Author: yaile -->
+
+@model ITrack.Data.Entities.StudyPlan
+
+@{ ViewData["Title"] = "Add study plan"; }
+
+<form asp-area="Panel" asp-controller="StudyPlans" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="container" style="padding-top: 36px;">
+        <h1 class="fw-bold" style="margin-right: 16px;">@ViewData["Title"]</h1>
+        <p>There you add new study plan</p>
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+        <div class="col col-md-4 mb-4">
+            <div class="form-group mb-2">
+                <label asp-for="PlanName">Plan name</label>
+                <input asp-for="PlanName" class="form-control" placeholder="ASP.NET Core"/>
+                <span asp-validation-for="PlanName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="UserId">User</label>
+                <select asp-for="UserId" id="UserId" name="UserId" class="form-control selectpicker" data-live-search="true">
+                    <option value="">Select</option>
+                    @foreach (var user in ViewBag.Users as List<ITrack.Data.Entities.User>)
+                    {
+                        <option value="@user.Id">@user.UserName (@user.Email)</option>
+                    }
+                </select>
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="DirectionId">Direction</label>
+                <select asp-for="DirectionId" id="DirectionId" name="DirectionId" class="form-control selectpicker" data-live-search="true">
+                    <option value="">Select</option>
+                    @foreach (var direction in ViewBag.Directions as List<ITrack.Data.Entities.DevelopmentDirection>)
+                    {
+                        <option value="@direction.DirectionID">@direction.DirectionName</option>
+                    }
+                </select>
+                <span asp-validation-for="DirectionId" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create</button>
+            <a asp-area="Panel" asp-controller="StudyPlans" asp-action="Index" class="btn btn-outline-primary">Cancel</a>
+        </div>
+    </div>
+
+</form>

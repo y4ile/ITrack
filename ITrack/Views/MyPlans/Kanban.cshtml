@@ -1,0 +1,99 @@
+﻿<!-- Author: yaile -->
+
+@using Microsoft.AspNetCore.Antiforgery
+@model ITrack.Data.ViewModels.KanbanViewModel
+@inject IAntiforgery Antiforgery
+
+@{ ViewData["Title"] = "Kanban Board"; }
+
+<div class="col" style="padding-top: 36px;">
+    <div class="container">
+        <h1 class="fw-bold">Kanban board for "@Model.StudyPlanName" plan</h1>
+        <p>There you can manage your plan stages</p>
+
+        <div class="row align-items-start">
+            @foreach (var status in Model.Statuses)
+            {
+                <div class="col border rounded-3 py-3 m-2 border-primary">
+                    <h3 class="fw-semibold ps-2 text-primary">
+                        <i class="typcn typcn-code fs-4 text-primary" style="margin-right: 8px;"></i>
+                        @status.StatusName
+                    </h3>
+                    <ul class="list-group border-primary" data-status-id="@status.StatusId" style="min-height:40px;" id="status-@status.StatusId">
+                        @foreach (var stage in Model.StagesByStatus[status.StatusId])
+                        {
+                            <li class="list-group-item" data-stage-id="@stage.StageID">@stage.StageName</li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@{
+    // [INFO] Getting antiforgery token
+    var tokens = Antiforgery.GetAndStoreTokens(Context);
+    var token = tokens.RequestToken;
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+    <script>
+        let lastHoveredColumn = null;
+        var updateStagePositionUrl = '@Url.Action("UpdateStagePosition", "MyPlans")';
+        document.querySelectorAll('.list-group').forEach(function (el) {
+            new Sortable(el, {
+                group: 'shared',
+                animation: 150,
+                ghostClass: 'ghost', 
+                onMove: function (evt) {
+                    const currentColumn = evt.to.parentElement;
+
+                    if (lastHoveredColumn !== currentColumn) {
+                        if (lastHoveredColumn) {
+                            lastHoveredColumn.classList.remove('highlight');
+                        }
+                        if (currentColumn) {
+                            currentColumn.classList.add('highlight');
+                        }
+                        lastHoveredColumn = currentColumn;
+                    }
+                },
+                onEnd: function (evt) {
+                    if (lastHoveredColumn) {
+                        lastHoveredColumn.classList.remove('highlight');
+                        lastHoveredColumn = null;
+                    }
+                    
+                    var itemEl = evt.item;
+                    var stageId = itemEl.getAttribute('data-stage-id');
+                    var newStatusId = evt.to.getAttribute('data-status-id');
+
+                    // [INFO] Getting new element's order
+                    var stageIdsInColumn = Array.from(evt.to.querySelectorAll('li')).map(li => li.getAttribute('data-stage-id'));
+
+                    // [INFO] Sending query to update stages
+                    fetch('@Url.Action("UpdateStagePosition", "MyPlans")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': '@token'
+                        },
+                        body: JSON.stringify({
+                            StageID: parseInt(stageId),
+                            NewStatusID: parseInt(newStatusId),
+                            OrderedStageIDs: stageIdsInColumn.map(id => parseInt(id))
+                        })
+                    }).then(response => response.json())
+                        .then(data => {
+                            if (!data.success) {
+                                alert("Can't update status/priority!");
+                            }
+                        });
+                }
+            });
+        });
+    
+    </script>
+}

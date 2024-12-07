@@ -1,0 +1,46 @@
+﻿<!-- Author: yaile -->
+
+@using Microsoft.AspNetCore.Identity
+@model ITrack.Data.ViewModels.EditUserViewModel
+
+@{ ViewData["Title"] = "Edit user"; }
+
+<div class="col" style="padding-top: 36px;">
+    <div class="container">
+        <h1 class="fw-bold">Edit user information</h1>
+        <p>There you can edit user data</p>
+
+        <form asp-area="Panel" asp-controller="Users" asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="col col-md-4 mb-4">
+                <div class="form-group mb-3">
+                    <label asp-for="UserName">Username</label>
+                    <input asp-for="UserName" class="form-control" placeholder="someuser"/>
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Email">Email</label>
+                    <input asp-for="Email" class="form-control" placeholder="email@mail.com"/>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="SelectedRole">Role</label>
+                    <select asp-for="SelectedRole" class="form-control">
+                        <option value="">Select</option>
+                        @foreach (var role in Model.Roles as List<IdentityRole>)
+                        {
+                            <option value="@role.Name">@role.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="SelectedRole" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" class="btn btn-outline-primary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

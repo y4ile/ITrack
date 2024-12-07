@@ -1,0 +1,97 @@
+﻿<!-- Author: yaile -->
+
+@model ITrack.Data.ViewModels.EditStudyPlanViewModel
+
+@{ ViewData["Title"] = "Edit study plan"; }
+
+<form asp-area="Panel" asp-controller="StudyPlans" asp-action="Edit" method="post">
+    <div class="container" style="padding-top: 36px;">
+        <h1 class="fw-bold" style="margin-right: 16px;">@ViewData["Title"]</h1>
+        <p>There you edit study plan</p>
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+        <div class="col col-md-4 mb-4">
+            
+            <input type="hidden" asp-for="PlanID"/>
+
+            <div class="form-group mb-2">
+                <input asp-for="PlanName" class="form-control" placeholder="Plan name"/>
+                <span asp-validation-for="PlanName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <select asp-for="DirectionId" id="DirectionId" name="DirectionId" class="form-control selectpicker" data-live-search="true">
+                    <option value="">Direction</option>
+                    @foreach (var direction in Model.Directions as List<ITrack.Data.Entities.DevelopmentDirection>)
+                    {
+                        <option value="@direction.DirectionID">@direction.DirectionName</option>
+                    }
+                </select>
+                <span asp-validation-for="DirectionId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <select asp-for="UserId" id="UserId" name="UserId" class="form-control selectpicker" data-live-search="true">
+                    <option value="">User</option>
+                    @foreach (var user in Model.Users as List<ITrack.Data.Entities.User>)
+                    {
+                        <option value="@user.Id">@user.UserName (@user.Email)</option>
+                    }
+                </select>
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="d-flex flex-row align-items-start flex-nowrap">
+            <h1 class="fw-bold" style="margin-right: 16px;">Plan stages</h1>
+            <a asp-action="AddStage" asp-route-planId="@Model.PlanID" class="btn btn-primary fw-semibold ms-md-2" style="margin-top: 5px;">Add new<i class="typcn typcn-plus" style="margin-left: 8px;"></i></a>
+        </div>
+        <p>There you can see all plan stages</p>
+
+        <table class="table table-striped mb-5">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Open date</th>
+                <th>Close date</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var stage in Model.PlanStages as List<ITrack.Data.Entities.PlanStage>)
+            {
+                <tr>
+                    <td>
+                        <a asp-action="EditStage" asp-route-id="@stage.StageID" class="nav-link no-pt">@stage.StageName</a>
+                    </td>
+                    <td>
+                        <a asp-action="EditStage" asp-route-id="@stage.StageID" class="nav-link no-pt">@stage.Status.StatusName</a>
+                    </td>
+                    <td>
+                        <a asp-action="EditStage" asp-route-id="@stage.StageID" class="nav-link no-pt">@stage.Priority</a>
+                    </td>
+                    <td>
+                        <a asp-action="EditStage" asp-route-id="@stage.StageID" class="nav-link no-pt">@stage.OpenDate.ToShortDateString()</a>
+                    </td>
+                    <td>
+                        <a asp-action="EditStage" asp-route-id="@stage.StageID" class="nav-link no-pt">@(stage.CloseDate != null ? stage.CloseDate.Value.ToShortDateString() : "-")</a>
+                    </td>
+                    <td>
+                        <a asp-action="EditStage" asp-route-id="@stage.StageID" class="btn btn-primary btn-sm">Edit</a>
+                        <form asp-area="Panel" asp-controller="StudyPlans" asp-action="DeleteStage" asp-route-id="@stage.StageID" asp-route-planId="@stage.PlanId" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+        <div class="d-flex flex-row align-items-start flex-nowrap">
+            <button type="submit" class="btn btn-primary me-2">Save</button>
+            <a asp-action="Index" class="btn btn-outline-primary">Cancel</a>
+        </div>
+    </div>
+</form>

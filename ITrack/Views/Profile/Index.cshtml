@@ -1,0 +1,45 @@
+﻿<!-- Author: yaile -->
+
+@model ITrack.Data.ViewModels.TimelineViewModel
+
+@{ ViewData["Title"] = "My profile"; }
+
+<div class="col" style="padding-top: 36px;">
+    <div class="container">
+        <h1 class="fw-bold" style="margin-right: 16px;">@ViewData["Title"]</h1>
+        <p>There you can see all your completed tasks on timeline</p>
+        
+        @if (Model.PlanStages.Any())
+        {
+            <div class="col-md-12">
+                <div class="card border-0">
+                    <div class="card-body">
+                        <div id="content">
+                            <ul class="timeline">
+                                @foreach (var stage in Model.PlanStages)
+                                {
+                                    <li class="event" data-date="@stage.CloseDate.ToString()">
+                                        @{
+                                            var timeDiff = ((DateOnly)stage.CloseDate).ToDateTime(TimeOnly.MinValue) - stage.OpenDate.ToDateTime(TimeOnly.MinValue);
+                                            var daysDiff = timeDiff.Days;
+                                            string textDiff = "This task closed in " + daysDiff + (daysDiff != 1 ? " days" : " day");
+                                        }
+                                        <h3>
+                                            @if (daysDiff < 4)
+                                            {
+                                                <i class="typcn typcn-flash fs-4 text-primary" style="margin-right: 8px;"></i>
+                                            }
+                                            @stage.StageName (@stage.Plan.PlanName)
+                                        </h3>
+                                        
+                                        <p>@textDiff</p>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

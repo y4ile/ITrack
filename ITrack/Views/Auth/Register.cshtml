@@ -1,0 +1,35 @@
+﻿@model ITrack.Data.ViewModels.RegisterViewModel
+
+@{ ViewData["Title"] = "Registration"; }
+
+<form asp-action="Register" method="post">
+    <div class="container" style="padding-top: 36px;">
+        <h1 class="fw-bold" style="margin-right: 16px;">@ViewData["Title"]</h1>
+        <p>Enter your credentials below</p>
+        <span asp-validation-summary="All" class="text-danger"></span>
+
+        <div class="col col-md-4 mb-4">
+            <div class="form-group">
+                <div class="mb-1">
+                    <input asp-for="Username" class="form-control" placeholder="Username" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+                <div class="mb-1">
+                    <input asp-for="Email" class="form-control" placeholder="Email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="mb-1">
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="mb-4">
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm password" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-md fw-semibold">Register</button>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary btn-md fw-semibold border-2">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>

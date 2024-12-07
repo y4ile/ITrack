@@ -1,0 +1,57 @@
+﻿<!-- Author: yaile -->
+
+@model ITrack.Data.ViewModels.EditPlanStageViewModel
+
+@{ ViewData["Title"] = "Add plan stage"; }
+
+<form asp-action="AddStage" method="post">
+    <div class="container" style="padding-top: 36px;">
+        <h1 class="fw-bold" style="margin-right: 16px;">@ViewData["Title"]</h1>
+        <p>There you add study plan stage</p>
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+        <div class="col col-md-4 mb-4">
+            <input type="hidden" asp-for="PlanId"/>
+            <div class="form-group mb-2">
+                <label asp-for="StageName">Stage name</label>
+                <input asp-for="StageName" class="form-control" placeholder="If-Else statements"/>
+                <span asp-validation-for="StageName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="StageName">Status</label>
+                <select asp-for="StatusId" id="StatusId" name="StatusId" class="form-control selectpicker" data-live-search="true">
+                    <option value="">Select</option>
+                    @foreach (var status in Model.Statuses as List<ITrack.Data.Entities.Status>)
+                    {
+                        <option value="@status.StatusId">@status.StatusName</option>
+                    }
+                </select>
+                <span asp-validation-for="StatusId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="Priority">Priority</label>
+                <input asp-for="Priority" class="form-control"/>
+                <span asp-validation-for="Priority" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="OpenDate">Open date</label>
+                <input asp-for="OpenDate" class="form-control" type="date"/>
+                <span asp-validation-for="OpenDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="CloseDate">Close date</label>
+                <input asp-for="CloseDate" class="form-control" type="date"/>
+                <span asp-validation-for="CloseDate" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="d-flex flex-row align-items-start flex-nowrap">
+            <button type="submit" class="btn btn-primary me-2">Add</button>
+            <a asp-action="Edit" asp-route-id="@Model.PlanId" class="btn btn-outline-primary">Back</a>
+        </div>
+    </div>
+</form>

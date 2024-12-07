@@ -1,0 +1,5 @@
+:root, [data-bs-theme=light] {
+  --bs-body-font-family: Poppins, sans-serif;
+  --bs-border-radius: 0.5rem;
+}
+

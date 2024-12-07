@@ -1,0 +1,27 @@
+﻿<!-- Author: yaile -->
+
+@model ITrack.Data.Entities.DevelopmentDirection
+
+@{ ViewData["Title"] = "Edit direction"; }
+
+<form asp-area="Panel" asp-controller="Directions" asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <input type="hidden" asp-for="DirectionID" />
+
+    <div class="container" style="padding-top: 36px;">
+        <h1 class="fw-bold">Edit development direction information</h1>
+        <p>There you can edit direction name</p>
+
+        <div class="col col-md-4 mb-4">
+            <div class="form-group mb-3">
+                <label asp-for="DirectionName">Direction name</label>
+                <input asp-for="DirectionName" class="form-control" placeholder="Back-end"/>
+                <span asp-validation-for="DirectionName" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-action="Index" class="btn btn-outline-primary">Cancel</a>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,153 @@
+﻿<!-- Author: yaile -->
+
+@model ITrack.Data.ViewModels.StudyPlansListViewModel
+
+@{ ViewData["Title"] = "Study plans"; }
+
+<div class="col" style="padding-top: 36px;">
+    <div class="container">
+        <div class="d-flex flex-row justify-content-between align-items-center">
+            <div class="d-flex flex-row align-items-start flex-nowrap">
+                <h1 class="fw-bold" style="margin-right: 16px;">@ViewData["Title"]</h1>
+                <a asp-area="Panel" asp-controller="StudyPlans" asp-action="Create" class="btn btn-primary fw-semibold ms-md-2" style="margin-top: 5px;">Add new<i class="typcn typcn-plus" style="margin-left: 8px;"></i></a>
+            </div>
+            <div>
+                <a class="@(Model.ViewType == "table" ? "link-primary" : "link-secondary")"
+                   asp-area="Panel"
+                   asp-controller="StudyPlans"
+                   asp-action="Index"
+                   asp-route-viewType="table"><i class="typcn typcn-th-menu" style="margin-right: 8px;"></i></a>
+
+                <a class="@(Model.ViewType == "cards" ? "link-primary" : "link-secondary")"
+                   asp-area="Panel"
+                   asp-controller="StudyPlans"
+                   asp-action="Index"
+                   asp-route-viewType="cards"><i class="typcn typcn-th-large"></i></a>
+            </div>
+        </div>
+        <p>There you can see all study plans & manage them</p>
+
+        @if (Model.ViewType == "cards")
+        {
+            <div class="row">
+                @foreach (var plan in Model.StudyPlans)
+                {
+                    <div class="col-md-3 mb-3">
+                        <div class="card border-primary">
+                            <div class="card-body text-primary">
+                                <div class="text-start d-flex flex-row justify-content-between">
+                                    <div>
+                                        <i class="typcn typcn-code fs-4 text-primary" style="margin-right: 8px;"></i>
+                                        <a class="fs-4 fw-semibold link-primary text-decoration-none" asp-area="Panel" asp-controller="StudyPlans" asp-action="Edit" asp-route-id="@plan.PlanID">
+                                            @{
+                                                var displayName = plan.PlanName;
+                                                if (!string.IsNullOrEmpty(plan.PlanName) && plan.PlanName.Length > 12)
+                                                {
+                                                    displayName = plan.PlanName.Substring(0, 12) + "...";
+                                                }
+                                            }
+                                            @displayName
+                                        </a>
+                                    </div>
+                                    <a class="btn link-primary" asp-area="Panel" asp-controller="StudyPlans" asp-action="Edit" asp-route-id="@plan.PlanID">
+                                        <i class="typcn typcn-arrow-right-thick"></i>
+                                    </a>
+                                </div>
+                                <h6 class="text-muted card-subtitle mb-2">@plan.User.UserName</h6>
+                                <h6 class="text-muted card-subtitle mb-2">@plan.Direction.DirectionName</h6>
+                                <a asp-area="Panel" asp-controller="StudyPlans" asp-action="Edit" asp-route-id="@plan.PlanID" class="btn btn-primary" style="margin-top: 12px;margin-right: 8px;">Edit</a>
+                                <form asp-area="Panel" asp-controller="StudyPlans" asp-action="Delete" asp-route-id="@plan.PlanID" method="post" class="d-inline">
+                                    <button class="btn btn-outline-primary" type="submit" style="margin-top: 12px;margin-right: 8px;">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else if (Model.ViewType == "table")
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Direction</th>
+                        <th>User</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var plan in Model.StudyPlans)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-area="Panel" asp-controller="StudyPlans" asp-action="Edit" asp-route-id="@plan.PlanID" class="nav-link no-pt">@plan.PlanName</a>
+                            </td>
+                            <td>
+                                <a asp-area="Panel" asp-controller="StudyPlans" asp-action="Edit" asp-route-id="@plan.PlanID" class="nav-link no-pt">@plan.Direction.DirectionName</a>
+                            </td>
+                            <td>
+                                <a asp-area="Panel" asp-controller="StudyPlans" asp-action="Edit" asp-route-id="@plan.PlanID" class="nav-link no-pt">@plan.User.UserName</a>
+                            </td>
+                            <td>
+                                <a asp-area="Panel" asp-controller="StudyPlans" asp-action="Edit" asp-route-id="@plan.PlanID" class="btn btn-primary btn-sm">Edit</a>
+                                <form asp-area="Panel" asp-controller="StudyPlans" asp-action="Delete" asp-route-id="@plan.PlanID" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<!-- Pagination -->
+<nav aria-label="Pagination" class="mt-auto">
+    <ul class="pagination justify-content-center">
+        @if (Model.PageViewModel.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-area="Panel"
+                   asp-controller="StudyPlans"
+                   asp-action="Index"
+                   asp-route-page="@(Model.PageViewModel.PageNumber - 1)">&laquo;</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <span class="page-link">&laquo;</span>
+            </li>
+        }
+        @for (int i = 1; i <= Model.PageViewModel.TotalPages; i++)
+        {
+            if (i == Model.PageViewModel.PageNumber)
+            {
+                <li class="page-item active">
+                    <span class="page-link">@i</span>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-area="Panel" asp-controller="StudyPlans" asp-action="Index" asp-route-page="@i">@i</a>
+                </li>
+            }
+        }
+        @if (Model.PageViewModel.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-area="Panel" asp-controller="StudyPlans" asp-action="Index" asp-route-page="@(Model.PageViewModel.PageNumber + 1)">&raquo;</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <span class="page-link">&raquo;</span>
+            </li>
+        }
+    </ul>
+</nav>

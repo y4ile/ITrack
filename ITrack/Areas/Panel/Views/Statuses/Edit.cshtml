@@ -1,0 +1,27 @@
+﻿<!-- Author: yaile -->
+
+@model ITrack.Data.Entities.Status
+
+@{ ViewData["Title"] = "Edit status"; }
+
+<form asp-area="Panel" asp-controller="Statuses" asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <input type="hidden" asp-for="StatusId" />
+
+    <div class="container" style="padding-top: 36px;">
+        <h1 class="fw-bold">Edit status information</h1>
+        <p>There you can edit status name</p>
+
+        <div class="col col-md-4 mb-4">
+            <div class="form-group mb-3">
+                <label asp-for="StatusName">Status name</label>
+                <input asp-for="StatusName" class="form-control" placeholder="Completed"/>
+                <span asp-validation-for="StatusName" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-action="Index" class="btn btn-outline-primary">Cancel</a>
+        </div>
+    </div>
+</form>

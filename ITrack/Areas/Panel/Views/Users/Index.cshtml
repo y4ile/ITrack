@@ -1,0 +1,143 @@
+﻿<!-- Author: yaile -->
+
+@model ITrack.Data.ViewModels.UserListViewModel
+
+@{ ViewData["Title"] = "Users"; }
+
+<div class="col" style="padding-top: 36px;">
+    <div class="container">
+        <div class="d-flex flex-row justify-content-between align-items-center">
+            <h1 class="fw-bold">@ViewData["Title"]</h1>
+            <div>
+                <a class="@(Model.ViewType == "table" ? "link-primary" : "link-secondary")"
+                   asp-area="Panel"
+                   asp-controller="Users"
+                   asp-action="Index"
+                   asp-route-viewType="table"><i class="typcn typcn-th-menu" style="margin-right: 8px;"></i></a>
+
+                <a class="@(Model.ViewType == "cards" ? "link-primary" : "link-secondary")"
+                   asp-area="Panel"
+                   asp-controller="Users"
+                   asp-action="Index"
+                   asp-route-viewType="cards"><i class="typcn typcn-th-large"></i></a>
+            </div>
+        </div>
+        <p>There you can see all users & manage them</p>
+
+        @if (Model.ViewType == "cards")
+        {
+            <div class="row">
+                @foreach (var user in Model.Users)
+                {
+                    <div class="col-md-3 mb-3">
+                        <div class="card border-primary">
+                            <div class="card-body text-primary">
+                                <div class="text-start d-flex flex-row justify-content-between">
+                                    <div>
+                                        <i class="typcn typcn-user fs-4 text-primary" style="margin-right: 8px;"></i>
+                                        <a class="fs-4 fw-semibold link-primary text-decoration-none" asp-area="Panel" asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id">
+                                            @{
+                                                var displayName = user.UserName;
+                                                if (!string.IsNullOrEmpty(user.UserName) && user.UserName.Length > 10)
+                                                {
+                                                    displayName = user.UserName.Substring(0, 10) + "...";
+                                                }
+                                            }
+                                            @displayName
+                                        </a>
+                                    </div>
+                                    <a class="btn link-primary" asp-area="Panel" asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id">
+                                        <i class="typcn typcn-arrow-right-thick"></i>
+                                    </a>
+                                </div>
+                                <h6 class="text-muted card-subtitle mb-2">@user.Email</h6>
+                                <a asp-area="Panel" asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-primary" style="margin-top: 12px;margin-right: 8px;">Edit</a>
+                                <form asp-area="Panel" asp-controller="Users" asp-action="Delete" asp-route-id="@user.Id" method="post" class="d-inline">
+                                    <button class="btn btn-outline-primary" type="submit" style="margin-top: 12px;margin-right: 8px;">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else if (Model.ViewType == "table")
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-area="Panel" asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id" class="nav-link no-pt">@user.UserName</a>
+                            </td>
+                            <td>@user.Email</td>
+                            <td>
+                                <a asp-area="Panel" asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-primary btn-sm">Edit</a>
+                                <form asp-area="Panel" asp-controller="Users" asp-action="Delete" asp-route-id="@user.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<!-- Pagination -->
+<nav aria-label="Pagination" class="mt-auto">
+    <ul class="pagination justify-content-center">
+        @if (Model.PageViewModel.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link" 
+                    asp-area="Panel" 
+                    asp-controller="Users" 
+                    asp-action="Index" 
+                    asp-route-page="@(Model.PageViewModel.PageNumber - 1)">&laquo;</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <span class="page-link">&laquo;</span>
+            </li>
+        }
+        @for (int i = 1; i <= Model.PageViewModel.TotalPages; i++)
+        {
+            if (i == Model.PageViewModel.PageNumber)
+            {
+                <li class="page-item active">
+                    <span class="page-link">@i</span>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-area="Panel" asp-controller="Users" asp-action="Index" asp-route-page="@i">@i</a>
+                </li>
+            }
+        }
+        @if (Model.PageViewModel.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-area="Panel" asp-controller="Users" asp-action="Index" asp-route-page="@(Model.PageViewModel.PageNumber + 1)">&raquo;</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <span class="page-link">&raquo;</span>
+            </li>
+        }
+    </ul>
+</nav>
